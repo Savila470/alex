@@ -59,15 +59,12 @@ public class Main {
 		// ameise1.naechsterKnoten(population.getPheromonmatrix()));
 		// System.out.println(population.toString());
 		Problem.berechneGesamtBearbeitungsZeitJobs();
-	Map ltest = new HashMap<>();
+
 	
-		Arrays.sort(Problem.gesamtBearbeitungsZeitJobs);
 		
-		Loesung loesung = new Loesung(0);
-		loesung.setJobreihenfolge(Problem.gesamtBearbeitungsZeitJobs);
-       System.out.println(loesung.berechneTFT());
-		System.out.println(population.toString());
-		for (int i = 0; i < 0; i++) {
+
+				System.out.println(population.toString());
+		for (int i = 0; i < 100000; i++) {
 			population.generiereLoesung();
 		}
 	}

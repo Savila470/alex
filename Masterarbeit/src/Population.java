@@ -1,4 +1,6 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.omg.Messaging.SyncScopeHelper;
 
@@ -35,16 +37,17 @@ public class Population {
 		if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation)] != null) {
 			s += "beste Lösung der aktuellen Iteration: " + besteLoesungIteration.berechneTFT();
 			s += "\n";
-			for(int i = 0;i<besteLoesungIteration.getJobreihenfolge().length;i++) {
+			for (int i = 0; i < besteLoesungIteration.getJobreihenfolge().length; i++) {
 				s += besteLoesungIteration.getJobreihenfolge()[i] + ", ";
 			}
 			s += "\n";
 			s += "beste Lösung: " + eliteloesung.berechneTFT();
 			s += "\n";
-			for(int i = 0;i<eliteloesung.getJobreihenfolge().length;i++) {
-			s += eliteloesung.getJobreihenfolge()[i] + ", ";
-		}}
-		s += "\n Anzahl Loesungen: " + anzahlLoesungen; 
+			for (int i = 0; i < eliteloesung.getJobreihenfolge().length; i++) {
+				s += eliteloesung.getJobreihenfolge()[i] + ", ";
+			}
+		}
+		s += "\n Anzahl Loesungen: " + anzahlLoesungen;
 		s += "\n";
 		s += "\n";
 
@@ -84,7 +87,7 @@ public class Population {
 		}
 		return aeltesteLoesung;
 	}
-	
+
 	public int ermittleIndexAeltesteLoesung() {
 		int index = 0;
 		int alter = loesungenInPopulation[0].alter;
@@ -96,9 +99,6 @@ public class Population {
 		}
 		return index;
 	}
-	
-	
-	
 
 	public int ermittleBesteLoesung(Loesung[] loesungen) {
 		int tft = 999999;
@@ -133,6 +133,15 @@ public class Population {
 
 		}
 
+		for (int i = 0; i < loesungen.length; i++) {
+
+			for (int j = 0; j < Problem.anzahlJobs; j++) {
+
+				loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
+
+			}
+		}
+
 		int besteLoesung = ermittleBesteLoesung(loesungen);
 		besteLoesungIteration = loesungen[besteLoesung];
 		if (iterationsanzahl < Problem.populationsgroesse) {
@@ -150,22 +159,46 @@ public class Population {
 		System.out.println(toString());
 		iterationsanzahl++;
 	}
-	
-	public Loesung lokaleSucheInsertion(Loesung loesung, int index ) {
+
+	public Loesung lokaleSucheInsertion(Loesung loesung, int index) {
 		int tft = loesung.berechneTFT();
-		int indexwert;
-		int[] jobReihenfolge2 = new int[Problem.anzahlJobs];
-		for(int i = 0;i<jobReihenfolge2.length;i++) {
-			if (i < index) {jobReihenfolge2[i] = loesung.getJobreihenfolge()[i];}
-			if ( i == index) { indexwert = jobReihenfolge2[i];}
-			if(i > index) {jobReihenfolge2[i-1] = loesung.getJobreihenfolge()[i];}
+		int tftTemp = 0;
+		int indexwert = 0;
+		Loesung neueLoesung = new Loesung(loesung.getAlter());
+		Loesung besteLoesung = loesung;
+
+		for (int i = 0; i < neueLoesung.getJobreihenfolge().length - 1; i++) {
+			if (i < index) {
+				neueLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[i];
+			}
+			if (i == index) {
+				indexwert = loesung.getJobreihenfolge()[i];
+			}
+			if (i >= index) {
+				neueLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[i + 1];
+			}
 		}
-		
-		
-		
-		for(int i = 0; i <loesung.getJobreihenfolge().length;i++) {
-			if(index > i) {jobReihenfolge2[i] = loesung.getJobreihenfolge()[i];}
+
+		Loesung tempLoesung = new Loesung(loesung.getAlter());
+
+		for (int i = 0; i < loesung.getJobreihenfolge().length; i++) {
+
+			tempLoesung.jobreihenfolge = Arrays.copyOf(neueLoesung.getJobreihenfolge(),
+					neueLoesung.getJobreihenfolge().length);
+
+			for (int j = loesung.getJobreihenfolge().length - 1; j > i; j--) {
+				tempLoesung.getJobreihenfolge()[j] = neueLoesung.getJobreihenfolge()[j - 1];
+
+			}
+			tempLoesung.getJobreihenfolge()[i] = indexwert;
+			tftTemp = tempLoesung.berechneTFT();
+			if (tftTemp < tft) {
+				besteLoesung.jobreihenfolge = Arrays.copyOf(tempLoesung.getJobreihenfolge(),
+						tempLoesung.getJobreihenfolge().length);
+				tft = tftTemp;
+			}
+
 		}
-		return loesung;
+		return besteLoesung;
 	}
 }

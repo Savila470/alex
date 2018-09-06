@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Loesung {
 
@@ -69,6 +70,9 @@ public class Loesung {
 		this.alter = alter;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return alter + " -> " + Arrays.toString(jobreihenfolge);
+	}
 
 }

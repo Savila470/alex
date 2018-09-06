@@ -5,7 +5,7 @@ public class Problem {
 	static int anzahlMaschinen = 5;
 	static int anzahlAmeisen = 20;
 	static int populationsgroesse = 10;
-	static double updategewicht = 2.0;
+	static double updategewicht = 1.0;
 	public static int[] gesamtBearbeitungsZeitJobs;
 	
 /*	static int[][] ausfuehrungszeiten = {
