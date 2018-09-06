@@ -166,5 +166,6 @@ public class Population {
 		for(int i = 0; i <loesung.getJobreihenfolge().length;i++) {
 			if(index > i) {jobReihenfolge2[i] = loesung.getJobreihenfolge()[i];}
 		}
+		return loesung;
 	}
 }
