@@ -64,9 +64,19 @@ public class Main {
 		
 
 				System.out.println(population.toString());
-		for (int i = 0; i < 100000; i++) {
+		for (int i = 0; i < 100; i++) {
 			population.generiereLoesung();
 		}
+		Loesung loesung = population.generiereLoesung();
+		for (int i = 0; i < 100; i++) {
+
+			for (int j = 0; j < Problem.anzahlJobs; j++) {
+
+				loesung = population.lokaleSucheInsertion(loesung, j);
+
+			}
+		}
+		System.out.println(loesung.berechneTFT());
 	}
 
 }

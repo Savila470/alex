@@ -16,7 +16,7 @@ public class Loesung {
 		Problem problem = new Problem();
 		int[][] ausfuehrungszeiten = problem.getAusfuehrungszeiten();
 		int tft = 0;
-		int[][] leavingTime = new int[5][20];
+		int[][] leavingTime = new int[Problem.anzahlMaschinen][Problem.anzahlJobs];
 		leavingTime[0][0] = ausfuehrungszeiten[0][jobreihenfolge[0]];
 
 // leavingTimes für Job 1

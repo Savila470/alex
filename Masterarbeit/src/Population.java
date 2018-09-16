@@ -9,7 +9,7 @@ public class Population {
 	int alterAeltesteLoesung = 100000;
 	int iterationsanzahl = 0;
 	int anzahlLoesungen = 0;
-	int anzahlJobs = 20;
+	int anzahlJobs = 100;
 	Loesung[] loesungenInPopulation = new Loesung[Problem.populationsgroesse];
 	double[][] pheromonmatrix = new double[anzahlJobs][anzahlJobs];
 	Loesung eliteloesung;
@@ -115,7 +115,7 @@ public class Population {
 		return besteLoesung;
 	}
 
-	public void generiereLoesung() {
+	public Loesung generiereLoesung() {
 		Ameise[] ameisen = new Ameise[Problem.anzahlAmeisen];
 		Loesung[] loesungen = new Loesung[Problem.anzahlAmeisen];
 		for (int i = 0; i < Problem.anzahlAmeisen; i++) {
@@ -137,7 +137,7 @@ public class Population {
 
 			for (int j = 0; j < Problem.anzahlJobs; j++) {
 
-				loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
+				//loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
 
 			}
 		}
@@ -158,6 +158,7 @@ public class Population {
 		updateMatrix(loesungen[besteLoesung], ermittleAeltesteLoesung());
 		System.out.println(toString());
 		iterationsanzahl++;
+		return eliteloesung;
 	}
 
 	public Loesung lokaleSucheInsertion(Loesung loesung, int index) {
@@ -166,7 +167,7 @@ public class Population {
 		int indexwert = 0;
 		Loesung neueLoesung = new Loesung(loesung.getAlter());
 		Loesung besteLoesung = loesung;
-
+if(index == 19) {indexwert = loesung.getJobreihenfolge()[19];}
 		for (int i = 0; i < neueLoesung.getJobreihenfolge().length - 1; i++) {
 			if (i < index) {
 				neueLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[i];
