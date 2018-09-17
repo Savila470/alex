@@ -137,7 +137,7 @@ public class Population {
 
 			for (int j = 0; j < Problem.anzahlJobs; j++) {
 
-				//loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
+				loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
 
 			}
 		}

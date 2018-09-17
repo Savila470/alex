@@ -7,6 +7,7 @@ public class Problem {
 	static int populationsgroesse = 10;
 	static double updategewicht = 1.0;
 	public static int[] gesamtBearbeitungsZeitJobs;
+	static int wartekapazitaet = 4;
 
 		/*		static int[][] ausfuehrungszeiten = {
 				{ 54, 83, 15, 71, 77, 36, 53, 38, 27, 87, 76, 91, 14, 29, 12, 77, 32, 87, 68, 94 },

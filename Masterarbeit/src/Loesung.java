@@ -7,7 +7,7 @@ public class Loesung {
 		jobreihenfolge = new int[Problem.anzahlJobs];
 		this.alter = alter;
 	}
-	
+
 	int jobreihenfolge[];
 
 	int alter = 0;
@@ -27,16 +27,26 @@ public class Loesung {
 		}
 
 //leavingTimes für Maschine 1
-		for (int j = 1; j < leavingTime[0].length; j++) {
+		for (int j = 1; j < Problem.wartekapazitaet + 1; j++) {
 
 			leavingTime[0][j] = leavingTime[0][j - 1] + ausfuehrungszeiten[0][jobreihenfolge[j]];
 
 			// System.out.println(leavingTime[0][j]);
 		}
 
-		for (int i = 1; i < leavingTime.length; i++) {
+		// berücksischtige Wartekapazität
+		for (int j = Problem.wartekapazitaet + 1; j < leavingTime[0].length; j++) {
 
-			for (int j = 1; j < leavingTime[0].length; j++) {
+			leavingTime[0][j] = Math.max(leavingTime[0][j - 1] + ausfuehrungszeiten[0][jobreihenfolge[j]],
+					leavingTime[1][j - Problem.wartekapazitaet - 1]);
+			// System.out.println(leavingTime[0][j]);
+		}
+
+//    leaving Times sonst
+
+		for (int i = 1; i < leavingTime.length - 1; i++) {
+
+			for (int j = 1; j < Problem.wartekapazitaet + 1; j++) {
 
 				leavingTime[i][j] = Math.max(leavingTime[i][j - 1], leavingTime[i - 1][j])
 						+ ausfuehrungszeiten[i][jobreihenfolge[j]];
@@ -45,6 +55,30 @@ public class Loesung {
 
 		}
 
+		// berücksischtige Wartekapazität
+		for (int i = 1; i < leavingTime.length - 1; i++) {
+
+			for (int j = Problem.wartekapazitaet + 1; j < leavingTime[0].length; j++) {
+
+				leavingTime[i][j] = Math.max(Math.max(leavingTime[i][j - 1], leavingTime[i - 1][j])
+						+ ausfuehrungszeiten[i][jobreihenfolge[j]],leavingTime[i+1][j - Problem.wartekapazitaet - 1]  );
+
+			}
+
+		}
+		
+		
+		// leavingTimes letzte Maschine
+		for (int j = 1; j < leavingTime[0].length; j++) {
+
+			leavingTime[leavingTime.length-1][j] = Math.max(leavingTime[leavingTime.length-1][j - 1], leavingTime[leavingTime.length - 2][j])
+					+ ausfuehrungszeiten[leavingTime.length-1][jobreihenfolge[j]];
+
+			// System.out.println(leavingTime[0][j]);
+		}
+		
+		
+
 		for (int i = 0; i < leavingTime[0].length; i++) {
 			tft = tft + leavingTime[leavingTime.length - 1][i];
 		}
@@ -52,7 +86,6 @@ public class Loesung {
 		return tft;
 
 	}
-
 
 	public int[] getJobreihenfolge() {
 		return jobreihenfolge;
@@ -69,7 +102,7 @@ public class Loesung {
 	public void setAlter(int alter) {
 		this.alter = alter;
 	}
-	
+
 	@Override
 	public String toString() {
 		return alter + " -> " + Arrays.toString(jobreihenfolge);

@@ -68,7 +68,7 @@ public class Main {
 			population.generiereLoesung();
 		}
 		Loesung loesung = population.generiereLoesung();
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 
 			for (int j = 0; j < Problem.anzahlJobs; j++) {
 
