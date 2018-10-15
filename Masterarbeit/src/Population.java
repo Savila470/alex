@@ -6,14 +6,15 @@ import org.omg.Messaging.SyncScopeHelper;
 
 public class Population {
 
-	int alterAeltesteLoesung = 100000;
+	int alterAeltesteLoesung = 1000000;
 	int iterationsanzahl = 0;
 	int anzahlLoesungen = 0;
-	int anzahlJobs = 100;
 	Loesung[] loesungenInPopulation = new Loesung[Problem.populationsgroesse];
-	double[][] pheromonmatrix = new double[anzahlJobs][anzahlJobs];
+	double[][] pheromonmatrix = new double[Problem.anzahlJobs][Problem.anzahlJobs];
 	Loesung eliteloesung;
+	Loesung alteEliteLoesung;
 	Loesung besteLoesungIteration;
+	Loesung neueEliteLoesung;
 
 	public Population() {
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
@@ -34,7 +35,8 @@ public class Population {
 
 			s += "\n";
 		}
-		if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation)] != null) {
+		// if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation)] != null) {
+		if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation, true)] != null) {
 			s += "beste Lösung der aktuellen Iteration: " + besteLoesungIteration.berechneTFT();
 			s += "\n";
 			for (int i = 0; i < besteLoesungIteration.getJobreihenfolge().length; i++) {
@@ -46,7 +48,9 @@ public class Population {
 			for (int i = 0; i < eliteloesung.getJobreihenfolge().length; i++) {
 				s += eliteloesung.getJobreihenfolge()[i] + ", ";
 			}
+			s += "   Alter: " + eliteloesung.getAlter();
 		}
+		
 		s += "\n Anzahl Loesungen: " + anzahlLoesungen;
 		s += "\n";
 		s += "\n";
@@ -76,6 +80,17 @@ public class Population {
 			anzahlLoesungen++;
 		}
 	}
+	
+	public void updateEliteMatrix(Loesung neueLoesung, Loesung alteLoesung) {
+		for (int i = 0; i < pheromonmatrix.length; i++) {
+			pheromonmatrix[i][neueLoesung.jobreihenfolge[i]] = pheromonmatrix[i][neueLoesung.jobreihenfolge[i]]
+					+ (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
+			
+				pheromonmatrix[i][alteLoesung.jobreihenfolge[i]] = pheromonmatrix[i][alteLoesung.jobreihenfolge[i]]
+						- (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
+				
+		}
+	}
 
 	public Loesung ermittleAeltesteLoesung() {
 		Loesung aeltesteLoesung = loesungenInPopulation[0];
@@ -102,7 +117,22 @@ public class Population {
 
 	public int ermittleBesteLoesung(Loesung[] loesungen) {
 		int tft = 999999;
-		if (anzahlLoesungen < 0) {
+		if (anzahlLoesungen > 0) {
+			tft = loesungen[0].berechneTFT();
+		}
+		int besteLoesung = 0;
+		for (int i = 1; i < loesungen.length; i++) {
+			if (loesungen[i].berechneTFT() < tft) {
+				tft = loesungen[i].berechneTFT();
+				besteLoesung = i;
+			}
+		}
+		return besteLoesung;
+	}
+	
+	public int ermittleBesteLoesung(Loesung[] loesungen, Boolean b) {
+		int tft = 999999;
+		if (anzahlLoesungen > 0) {
 			tft = loesungen[0].berechneTFT();
 		}
 		int besteLoesung = 0;
@@ -137,7 +167,7 @@ public class Population {
 
 			for (int j = 0; j < Problem.anzahlJobs; j++) {
 
-				loesungen[i] = lokaleSucheInsertion(loesungen[i], j);
+				loesungen[i] = lokaleSucheInsertion(loesungen[i],j); 
 
 			}
 		}
@@ -148,13 +178,36 @@ public class Population {
 			loesungenInPopulation[iterationsanzahl] = loesungen[besteLoesung];
 		}
 		if (iterationsanzahl == 0) {
+			// update Matrix mit Elitelösung
 			eliteloesung = loesungen[besteLoesung];
+			for (int i = 0; i < pheromonmatrix.length; i++) {
+				pheromonmatrix[i][eliteloesung.jobreihenfolge[i]] = pheromonmatrix[i][eliteloesung.jobreihenfolge[i]]
+						+ (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
+				
+				
+			}
 		} else {
 			if (loesungen[besteLoesung].berechneTFT() < eliteloesung.berechneTFT()) {
+				updateEliteMatrix(loesungen[besteLoesung], eliteloesung);
 				eliteloesung = loesungen[besteLoesung];
 			}
 		}
+		
+		alteEliteLoesung = new Loesung(iterationsanzahl);
+		alteEliteLoesung.jobreihenfolge = Arrays.copyOf(eliteloesung.getJobreihenfolge(),
+				eliteloesung.getJobreihenfolge().length);
+		
+	
+		
+		for (int j = 0; j < Problem.anzahlJobs; j++) {
 
+			eliteloesung = lokaleSucheInsertion(eliteloesung,j); 
+
+		}
+		System.out.println(alteEliteLoesung.toString());
+		System.out.println(eliteloesung.toString());
+		updateEliteMatrix(eliteloesung, alteEliteLoesung);
+		
 		updateMatrix(loesungen[besteLoesung], ermittleAeltesteLoesung());
 		System.out.println(toString());
 		iterationsanzahl++;

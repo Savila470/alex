@@ -17,13 +17,15 @@ public class Ameise {
 		aktuellePosition = 0;
 	
 	}
+	
+
 
 	public void updateWahrscheinlichkeiten(double[][] matrix) {
 
 		double summeAlleKanten = 0;
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
-				summeAlleKanten += matrix[aktuellePosition][i];
+				summeAlleKanten += matrix[aktuellePosition][i] * Math.pow((100.0/Problem.gesamtBearbeitungsZeitJobs[i]),Problem.beta);
 			}
 		}
 
@@ -31,7 +33,7 @@ public class Ameise {
 
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
-				wahrscheinlichkeiten[i] = (matrix[aktuellePosition][i]) / summeAlleKanten;
+				wahrscheinlichkeiten[i] = Math.pow((matrix[aktuellePosition][i]),Problem.alpha) * Math.pow((100.0/Problem.gesamtBearbeitungsZeitJobs[i]),Problem.beta) / summeAlleKanten;
 			} else {
 				wahrscheinlichkeiten[i] = 0;
 			}
@@ -44,6 +46,7 @@ public class Ameise {
 	public int naechsterKnoten(double[][] matrix) {
 		Collections.sort(erlaubteKnoten);
 		updateWahrscheinlichkeiten(matrix);
+	//	System.out.println(toString());
 		for (Object knoten : erlaubteKnoten) {
 			// System.out.println(knoten);
 			double summe = 0;

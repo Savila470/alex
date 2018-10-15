@@ -9,6 +9,7 @@ public class Loesung {
 	}
 
 	int jobreihenfolge[];
+	int makespan = 0;
 
 	int alter = 0;
 
@@ -16,6 +17,7 @@ public class Loesung {
 		Problem problem = new Problem();
 		int[][] ausfuehrungszeiten = problem.getAusfuehrungszeiten();
 		int tft = 0;
+		
 		int[][] leavingTime = new int[Problem.anzahlMaschinen][Problem.anzahlJobs];
 		leavingTime[0][0] = ausfuehrungszeiten[0][jobreihenfolge[0]];
 
@@ -76,12 +78,12 @@ public class Loesung {
 
 			// System.out.println(leavingTime[0][j]);
 		}
-		
-		
+		// makespan
+		//tft = leavingTime[leavingTime.length-1][leavingTime[0].length-1];
 
 		for (int i = 0; i < leavingTime[0].length; i++) {
 			tft = tft + leavingTime[leavingTime.length - 1][i];
-		}
+	}
 
 		return tft;
 
