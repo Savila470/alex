@@ -1,3 +1,4 @@
+package antcolopt;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,7 +9,7 @@ public class Loesung {
 		this.alter = alter;
 	}
 
-	int jobreihenfolge[];
+	public int jobreihenfolge[];
 	int makespan = 0;
 
 	int alter = 0;

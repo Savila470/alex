@@ -1,10 +1,21 @@
+package antcolopt;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.omg.Messaging.SyncScopeHelper;
 
 public class Population {
+
+	public int getIterationsanzahl() {
+		return iterationsanzahl;
+	}
+
+	public void setIterationsanzahl(int iterationsanzahl) {
+		this.iterationsanzahl = iterationsanzahl;
+	}
 
 	int alterAeltesteLoesung = 1000000;
 	int iterationsanzahl = 0;
@@ -35,7 +46,8 @@ public class Population {
 
 			s += "\n";
 		}
-		// if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation)] != null) {
+		// if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation)] !=
+		// null) {
 		if (loesungenInPopulation[ermittleBesteLoesung(loesungenInPopulation, true)] != null) {
 			s += "beste Lösung der aktuellen Iteration: " + besteLoesungIteration.berechneTFT();
 			s += "\n";
@@ -50,7 +62,7 @@ public class Population {
 			}
 			s += "   Alter: " + eliteloesung.getAlter();
 		}
-		
+
 		s += "\n Anzahl Loesungen: " + anzahlLoesungen;
 		s += "\n";
 		s += "\n";
@@ -80,15 +92,15 @@ public class Population {
 			anzahlLoesungen++;
 		}
 	}
-	
+
 	public void updateEliteMatrix(Loesung neueLoesung, Loesung alteLoesung) {
 		for (int i = 0; i < pheromonmatrix.length; i++) {
 			pheromonmatrix[i][neueLoesung.jobreihenfolge[i]] = pheromonmatrix[i][neueLoesung.jobreihenfolge[i]]
 					+ (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
-			
-				pheromonmatrix[i][alteLoesung.jobreihenfolge[i]] = pheromonmatrix[i][alteLoesung.jobreihenfolge[i]]
-						- (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
-				
+
+			pheromonmatrix[i][alteLoesung.jobreihenfolge[i]] = pheromonmatrix[i][alteLoesung.jobreihenfolge[i]]
+					- (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
+
 		}
 	}
 
@@ -129,7 +141,7 @@ public class Population {
 		}
 		return besteLoesung;
 	}
-	
+
 	public int ermittleBesteLoesung(Loesung[] loesungen, Boolean b) {
 		int tft = 999999;
 		if (anzahlLoesungen > 0) {
@@ -143,6 +155,14 @@ public class Population {
 			}
 		}
 		return besteLoesung;
+	}
+
+	public Loesung getEliteloesung() {
+		return eliteloesung;
+	}
+
+	public void setEliteloesung(Loesung eliteloesung) {
+		this.eliteloesung = eliteloesung;
 	}
 
 	public Loesung generiereLoesung() {
@@ -163,12 +183,14 @@ public class Population {
 
 		}
 
-		for (int i = 0; i < loesungen.length; i++) {
+		for (int p = 0; p < 6; p++) {
+			for (int i = 0; i < loesungen.length; i++) {
+				for (int j = 0; j < Problem.anzahlJobs; j++) {
+					int zufall = (int) (Problem.anzahlJobs * Math.random());
 
-			for (int j = 0; j < Problem.anzahlJobs; j++) {
-
-				loesungen[i] = lokaleSucheInsertion(loesungen[i],j); 
-
+					// loesungen[i] = lokaleSucheInsertion(loesungen[i], zufall);
+					loesungen[i] = ibls(loesungen[i], zufall);
+				}
 			}
 		}
 
@@ -183,8 +205,7 @@ public class Population {
 			for (int i = 0; i < pheromonmatrix.length; i++) {
 				pheromonmatrix[i][eliteloesung.jobreihenfolge[i]] = pheromonmatrix[i][eliteloesung.jobreihenfolge[i]]
 						+ (Problem.eliteUpdateGewicht / Problem.anzahlJobs);
-				
-				
+
 			}
 		} else {
 			if (loesungen[besteLoesung].berechneTFT() < eliteloesung.berechneTFT()) {
@@ -192,22 +213,24 @@ public class Population {
 				eliteloesung = loesungen[besteLoesung];
 			}
 		}
-		
-		alteEliteLoesung = new Loesung(iterationsanzahl);
-		alteEliteLoesung.jobreihenfolge = Arrays.copyOf(eliteloesung.getJobreihenfolge(),
-				eliteloesung.getJobreihenfolge().length);
-		
-	
-		
-		for (int j = 0; j < Problem.anzahlJobs; j++) {
 
-			eliteloesung = lokaleSucheInsertion(eliteloesung,j); 
+		/*
+		 * alteEliteLoesung = new Loesung(iterationsanzahl);
+		 * alteEliteLoesung.jobreihenfolge =
+		 * Arrays.copyOf(eliteloesung.getJobreihenfolge(),
+		 * eliteloesung.getJobreihenfolge().length);
+		 * 
+		 * 
+		 * 
+		 * for (int j = 0; j < Problem.anzahlJobs; j++) {
+		 * 
+		 * eliteloesung = lokaleSucheInsertion(eliteloesung,j);
+		 * 
+		 * } System.out.println(alteEliteLoesung.toString());
+		 * System.out.println(eliteloesung.toString()); updateEliteMatrix(eliteloesung,
+		 * alteEliteLoesung);
+		 */
 
-		}
-		System.out.println(alteEliteLoesung.toString());
-		System.out.println(eliteloesung.toString());
-		updateEliteMatrix(eliteloesung, alteEliteLoesung);
-		
 		updateMatrix(loesungen[besteLoesung], ermittleAeltesteLoesung());
 		System.out.println(toString());
 		iterationsanzahl++;
@@ -217,16 +240,15 @@ public class Population {
 	public Loesung lokaleSucheInsertion(Loesung loesung, int index) {
 		int tft = loesung.berechneTFT();
 		int tftTemp = 0;
-		int indexwert = 0;
+		int indexwert = loesung.getJobreihenfolge()[index];
 		Loesung neueLoesung = new Loesung(loesung.getAlter());
 		Loesung besteLoesung = loesung;
-if(index == 19) {indexwert = loesung.getJobreihenfolge()[19];}
+		if (index == Problem.anzahlJobs - 1) {
+			indexwert = loesung.getJobreihenfolge()[Problem.anzahlJobs - 1];
+		}
 		for (int i = 0; i < neueLoesung.getJobreihenfolge().length - 1; i++) {
 			if (i < index) {
 				neueLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[i];
-			}
-			if (i == index) {
-				indexwert = loesung.getJobreihenfolge()[i];
 			}
 			if (i >= index) {
 				neueLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[i + 1];
@@ -255,4 +277,102 @@ if(index == 19) {indexwert = loesung.getJobreihenfolge()[19];}
 		}
 		return besteLoesung;
 	}
+
+	public Loesung ibls(Loesung loesung, int index) {
+		
+		Loesung besteLoesungIbls = loesung;
+		List<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < Problem.anzahlJobs; i++) {
+			list.add(i);
+		}
+		
+		java.util.Collections.shuffle(list);
+		System.out.println(list);
+		int i = 0;
+		int h = 1;
+		while (i < Problem.anzahlJobs) {
+			int s = list.get(h-1);
+			int j = findeIndexJob(besteLoesungIbls, s);
+			Loesung[] w = new Loesung[100];
+			int anzahlLoesungenIbls = -1;
+			for (int k = 0; k < j-1; k++) {
+				anzahlLoesungenIbls++;
+				//System.out.println(anzahlLoesungenIbls);
+				w[anzahlLoesungenIbls] = new Loesung(loesung.getAlter());				
+				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(loesung.getJobreihenfolge(),
+						loesung.getJobreihenfolge().length);
+				for (int z = 0; z < j; z++) {
+					if (z < k) {
+						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z];
+					} else {
+					//	System.out.println(j);
+						//System.out.println(list.get(h));
+						if (z<Problem.anzahlJobs-1) {
+						w[anzahlLoesungenIbls].jobreihenfolge[z + 1] = loesung.jobreihenfolge[z];}
+					}
+				}
+				//System.out.println("j: " + j);
+				//System.out.println("k: " + k);
+				w[anzahlLoesungenIbls].jobreihenfolge[k] = s;
+
+			}
+
+			for (int k = j ; k < Problem.anzahlJobs; k++) {
+				anzahlLoesungenIbls++;
+				//System.out.println(anzahlLoesungenIbls);
+				w[anzahlLoesungenIbls] = new Loesung(loesung.getAlter());
+				
+				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(loesung.getJobreihenfolge(),
+						loesung.getJobreihenfolge().length);
+
+				for (int z = j; z < Problem.anzahlJobs-1; z++) {
+					if (z <= k) {
+						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z + 1];
+					} else {
+						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z];
+					}
+				}
+				w[anzahlLoesungenIbls].jobreihenfolge[k] = s;
+			}
+
+			int besteLoesungsGueteIbls = w[0].berechneTFT();
+			Loesung besteInsertionLoesung = new Loesung(loesung.getAlter());
+			for (int y = 1; y < anzahlLoesungenIbls; y++) {
+				//System.out.println(y);
+				//System.out.println(anzahlLoesungenIbls);
+				int loesungsGuete = w[y].berechneTFT();
+				if (loesungsGuete < besteLoesungsGueteIbls) {
+					besteInsertionLoesung = w[y];
+					besteLoesungsGueteIbls = loesungsGuete;
+					System.out.println(besteLoesungsGueteIbls);
+					
+				}
+			}
+			if (besteLoesungsGueteIbls < besteLoesungIbls.berechneTFT()) {
+				besteLoesungIbls = besteInsertionLoesung;
+				/* System.out.println("neueLoesung:");
+				for (int f = 0; f<Problem.anzahlJobs;f++) {
+					
+					System.out.println(besteLoesungIbls.jobreihenfolge[f]);
+				}*/
+				i = 1;
+			} else {
+				i = i + 1;
+			}
+			h = (h + 1) % Problem.anzahlJobs;
+		}
+
+		return besteLoesungIbls;
+	}
+
+	public int findeIndexJob(Loesung loesung, int job) {
+		System.out.println(job);
+		for (int i = 0; i < Problem.anzahlJobs; i++) {
+			if (loesung.jobreihenfolge[i] == job) {
+				return i;
+			}
+		}
+		return 999;
+	}
+
 }

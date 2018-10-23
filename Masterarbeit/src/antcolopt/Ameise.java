@@ -1,3 +1,5 @@
+package antcolopt;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -6,7 +8,6 @@ public class Ameise {
 	int[] besuchteKnoten = new int[Problem.anzahlJobs];
 	ArrayList<Integer> erlaubteKnoten = new ArrayList<Integer>();
 	int aktuellePosition;
-	
 
 	double[] wahrscheinlichkeiten = new double[Problem.anzahlJobs];
 
@@ -15,17 +16,16 @@ public class Ameise {
 			erlaubteKnoten.add(i);
 		}
 		aktuellePosition = 0;
-	
-	}
-	
 
+	}
 
 	public void updateWahrscheinlichkeiten(double[][] matrix) {
 
 		double summeAlleKanten = 0;
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
-				summeAlleKanten += matrix[aktuellePosition][i] * Math.pow((100.0/Problem.gesamtBearbeitungsZeitJobs[i]),Problem.beta);
+				summeAlleKanten += matrix[aktuellePosition][i]
+						* Math.pow((100.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta);
 			}
 		}
 
@@ -33,20 +33,19 @@ public class Ameise {
 
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
-				wahrscheinlichkeiten[i] = Math.pow((matrix[aktuellePosition][i]),Problem.alpha) * Math.pow((100.0/Problem.gesamtBearbeitungsZeitJobs[i]),Problem.beta) / summeAlleKanten;
+				wahrscheinlichkeiten[i] = Math.pow((matrix[aktuellePosition][i]), Problem.alpha)
+						* Math.pow((100.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta) / summeAlleKanten;
 			} else {
 				wahrscheinlichkeiten[i] = 0;
 			}
 		}
 
 	}
-	
-	
 
 	public int naechsterKnoten(double[][] matrix) {
 		Collections.sort(erlaubteKnoten);
 		updateWahrscheinlichkeiten(matrix);
-	//	System.out.println(toString());
+		// System.out.println(toString());
 		for (Object knoten : erlaubteKnoten) {
 			// System.out.println(knoten);
 			double summe = 0;
@@ -61,7 +60,6 @@ public class Ameise {
 					erlaubteKnoten.remove(i);
 					besuchteKnoten[aktuellePosition] = ergebnis;
 
-					
 					aktuellePosition++;
 					return ergebnis;
 				}
