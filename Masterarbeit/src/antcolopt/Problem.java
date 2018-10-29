@@ -8,10 +8,10 @@ public class Problem {
 	static int anzahlMaschinen = 5;
 	static int anzahlAmeisen = 10;
 	static int populationsgroesse = 5;
-	static double updategewicht = 100;
+	static double updategewicht = 2;
 	public static double[] gesamtBearbeitungsZeitJobs;
 	static int wartekapazitaet = 1;
-	static double eliteUpdateGewicht=5*updategewicht;
+	static double eliteUpdateGewicht=250*updategewicht;
 	static double alpha = 1;
 	static double beta = 0;
 	public static int[][][] ausfuehrungszeiten0 = new int[10][anzahlMaschinen][anzahlJobs]; 

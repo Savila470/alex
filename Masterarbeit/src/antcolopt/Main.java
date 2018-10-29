@@ -25,7 +25,7 @@ public class Main {
 			BufferedWriter bw = new BufferedWriter(fw);
 
 			final long timeStart = System.currentTimeMillis();
-			for (int i = 0; i < 500; i++) {
+			for (int i = 0; i < 1000; i++) {
 
 				population.generiereLoesung();
 				final long timeEnd = System.currentTimeMillis();

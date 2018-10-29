@@ -173,26 +173,31 @@ public class Population {
 			loesungen[i] = new Loesung(iterationsanzahl);
 		}
 
-		for (int j = 0; j < Problem.anzahlAmeisen; j++) {
+		for (int j = 0; j < loesungen.length; j++) {
 
 			for (int i = 0; i < Problem.anzahlJobs; i++) {
 				ameisen[j].naechsterKnoten(pheromonmatrix);
 			}
 
 			loesungen[j].jobreihenfolge = ameisen[j].getBesuchteKnoten();
+			if(loesungen[j].getJobreihenfolge()[0] == loesungen[j].getJobreihenfolge()[1]) 
+			{System.out.println("aha!");}
+			
 
 		}
 
-		for (int p = 0; p < 6; p++) {
+		
 			for (int i = 0; i < loesungen.length; i++) {
-				for (int j = 0; j < Problem.anzahlJobs; j++) {
+				for (int j = 0; j <100; j++) {
 					int zufall = (int) (Problem.anzahlJobs * Math.random());
-
-					// loesungen[i] = lokaleSucheInsertion(loesungen[i], zufall);
-					loesungen[i] = ibls(loesungen[i], zufall);
+					
+				 loesungen[i] = lokaleSucheInsertion(loesungen[i], zufall);
+				 zufall = (int) (Problem.anzahlJobs * Math.random());
+					
+				loesungen[i] = swapSearch(loesungen[i], zufall);
 				}
 			}
-		}
+		
 
 		int besteLoesung = ermittleBesteLoesung(loesungen);
 		besteLoesungIteration = loesungen[besteLoesung];
@@ -293,68 +298,69 @@ public class Population {
 		while (i < Problem.anzahlJobs) {
 			int s = list.get(h-1);
 			int j = findeIndexJob(besteLoesungIbls, s);
-			Loesung[] w = new Loesung[100];
+			Loesung[] w = new Loesung[5000];
 			int anzahlLoesungenIbls = -1;
 			for (int k = 0; k < j-1; k++) {
 				anzahlLoesungenIbls++;
 				//System.out.println(anzahlLoesungenIbls);
-				w[anzahlLoesungenIbls] = new Loesung(loesung.getAlter());				
-				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(loesung.getJobreihenfolge(),
-						loesung.getJobreihenfolge().length);
+				w[anzahlLoesungenIbls] = new Loesung(besteLoesungIbls.getAlter());				
+				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(besteLoesungIbls.getJobreihenfolge(),
+						besteLoesungIbls.getJobreihenfolge().length);
 				for (int z = 0; z < j; z++) {
-					if (z < k) {
-						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z];
-					} else {
+					if (z >= k) {
+						
 					//	System.out.println(j);
 						//System.out.println(list.get(h));
 						if (z<Problem.anzahlJobs-1) {
-						w[anzahlLoesungenIbls].jobreihenfolge[z + 1] = loesung.jobreihenfolge[z];}
-					}
+						w[anzahlLoesungenIbls].jobreihenfolge[z + 1] = besteLoesungIbls.jobreihenfolge[z];}
+					
 				}
-				//System.out.println("j: " + j);
+			
 				//System.out.println("k: " + k);
 				w[anzahlLoesungenIbls].jobreihenfolge[k] = s;
 
 			}
-
+			}
+			System.out.println("j: " + j);
 			for (int k = j ; k < Problem.anzahlJobs; k++) {
 				anzahlLoesungenIbls++;
 				//System.out.println(anzahlLoesungenIbls);
-				w[anzahlLoesungenIbls] = new Loesung(loesung.getAlter());
+				w[anzahlLoesungenIbls] = new Loesung(besteLoesungIbls.getAlter());
 				
-				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(loesung.getJobreihenfolge(),
-						loesung.getJobreihenfolge().length);
+				w[anzahlLoesungenIbls].jobreihenfolge = Arrays.copyOf(besteLoesungIbls.getJobreihenfolge(),
+						besteLoesungIbls.getJobreihenfolge().length);
 
 				for (int z = j; z < Problem.anzahlJobs-1; z++) {
 					if (z <= k) {
-						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z + 1];
-					} else {
-						w[anzahlLoesungenIbls].jobreihenfolge[z] = loesung.jobreihenfolge[z];
-					}
+						w[anzahlLoesungenIbls].jobreihenfolge[z] = besteLoesungIbls.jobreihenfolge[z + 1];
+					} 
 				}
 				w[anzahlLoesungenIbls].jobreihenfolge[k] = s;
 			}
 
-			int besteLoesungsGueteIbls = w[0].berechneTFT();
+			int besterTftNeuerLoesungen = w[0].berechneTFT();
 			Loesung besteInsertionLoesung = new Loesung(loesung.getAlter());
 			for (int y = 1; y < anzahlLoesungenIbls; y++) {
 				//System.out.println(y);
 				//System.out.println(anzahlLoesungenIbls);
 				int loesungsGuete = w[y].berechneTFT();
-				if (loesungsGuete < besteLoesungsGueteIbls) {
+				if (loesungsGuete < besterTftNeuerLoesungen) {
 					besteInsertionLoesung = w[y];
-					besteLoesungsGueteIbls = loesungsGuete;
-					System.out.println(besteLoesungsGueteIbls);
+					besterTftNeuerLoesungen = loesungsGuete;
+					
 					
 				}
 			}
-			if (besteLoesungsGueteIbls < besteLoesungIbls.berechneTFT()) {
+			System.out.println("besterTFTNeuerLoesungen :" + besterTftNeuerLoesungen);
+			System.out.println("besterTFT: " + besteLoesungIbls.berechneTFT());
+			if (besterTftNeuerLoesungen < besteLoesungIbls.berechneTFT()) {
 				besteLoesungIbls = besteInsertionLoesung;
-				/* System.out.println("neueLoesung:");
+				System.out.println("NeuerBesterTFT: " + besteLoesungIbls.berechneTFT());
+				System.out.println("neueLoesung:");
 				for (int f = 0; f<Problem.anzahlJobs;f++) {
 					
 					System.out.println(besteLoesungIbls.jobreihenfolge[f]);
-				}*/
+				}
 				i = 1;
 			} else {
 				i = i + 1;
@@ -374,5 +380,32 @@ public class Population {
 		}
 		return 999;
 	}
-
+	
+	public Loesung swapSearch(Loesung loesung, int index) {
+		
+		int tft = loesung.berechneTFT();
+		
+	
+		Loesung besteLoesung = new Loesung(loesung.getAlter());
+		besteLoesung = loesung;
+		for(int i = 0; i<loesung.getJobreihenfolge().length;i++) {
+			
+			Loesung bessereLoesung = new Loesung(loesung.getAlter());
+			bessereLoesung.jobreihenfolge = Arrays.copyOf(loesung.getJobreihenfolge(),
+					loesung.getJobreihenfolge().length);
+			int temp = bessereLoesung.getJobreihenfolge()[i];
+			bessereLoesung.getJobreihenfolge()[i] = loesung.getJobreihenfolge()[index];
+			bessereLoesung.getJobreihenfolge()[index] = temp;
+			int tempTft = bessereLoesung.berechneTFT();
+			
+			if(tempTft < tft) {
+				
+				besteLoesung = bessereLoesung;
+				tft = tempTft;
+			}
+	}
+		
+		
+		return besteLoesung;
+	}
 }
