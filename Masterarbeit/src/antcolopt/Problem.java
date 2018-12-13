@@ -4,19 +4,33 @@ import java.util.ArrayList;
 
 public class Problem {
 
-	static int anzahlJobs = 50;
-	static int anzahlMaschinen = 5;
-	static int anzahlAmeisen = 10;
+	static int anzahlJobs = 100;
+	static int anzahlMaschinen = 20;
+	static int anzahlAmeisen = 5;
 	static int populationsgroesse = 5;
-	static double updategewicht = 2;
+	static double updategewicht = 20;
 	public static double[] gesamtBearbeitungsZeitJobs;
-	static int wartekapazitaet = 1;
-	static double eliteUpdateGewicht=250*updategewicht;
-	static double alpha = 1;
-	static double beta = 0;
+	static int wartekapazitaet = 4;
+	static double eliteUpdateGewicht=50 * updategewicht;
+	static double alpha = 1.0;
+	static double beta =0;
 	public static int[][][] ausfuehrungszeiten0 = new int[10][anzahlMaschinen][anzahlJobs]; 
 	static ArrayList<int[][]> problemliste = new ArrayList<int[][]>();
 	static int probleminstanz = 0;
+	static boolean lokaleSuche = true;
+	static String dateiname = "D:\\tailard\\tai100_20.txt";
+	static boolean summenregel = false;
+	
+	
+	
+	
+	public static double getBeta() {
+		return beta;
+	}
+
+	public static void setBeta(double beta) {
+		Problem.beta = beta;
+	}
 
 	
 	

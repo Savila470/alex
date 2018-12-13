@@ -26,12 +26,23 @@ public class Population {
 	Loesung alteEliteLoesung;
 	Loesung besteLoesungIteration;
 	Loesung neueEliteLoesung;
+	List<Integer> list = new ArrayList<Integer>();
+	List<Integer> list2 = new ArrayList<Integer>();
+	
 
 	public Population() {
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			for (int j = 0; j < Problem.anzahlJobs; j++) {
 				pheromonmatrix[i][j] = (double) 1 / (Problem.anzahlJobs);
+				
+				
 			}
+			for (int k = 0; k < Problem.anzahlJobs; k++) {
+				list.add(k);
+				list2.add(k);
+			}
+			java.util.Collections.shuffle(list);			
+			java.util.Collections.shuffle(list2);
 		}
 	}
 
@@ -180,24 +191,33 @@ public class Population {
 			}
 
 			loesungen[j].jobreihenfolge = ameisen[j].getBesuchteKnoten();
-			if(loesungen[j].getJobreihenfolge()[0] == loesungen[j].getJobreihenfolge()[1]) 
-			{System.out.println("aha!");}
+			
 			
 
 		}
 
-		
+		if(Problem.lokaleSuche == true) {
+			
+			
+			for(int l=0;l<3;l++ ) {
 			for (int i = 0; i < loesungen.length; i++) {
-				for (int j = 0; j <100; j++) {
-					int zufall = (int) (Problem.anzahlJobs * Math.random());
+				for (int j = 0; j <Problem.anzahlJobs; j++) {
+					//int zufall = (int) (Problem.anzahlJobs * Math.random());
 					
-				 loesungen[i] = lokaleSucheInsertion(loesungen[i], zufall);
-				 zufall = (int) (Problem.anzahlJobs * Math.random());
-					
-				loesungen[i] = swapSearch(loesungen[i], zufall);
+				 loesungen[i] = lokaleSucheInsertion(loesungen[i], list.get(j));
+				// zufall = (int) (Problem.anzahlJobs * Math.random());
+				 loesungen[i] = swapSearch(loesungen[i], list2.get(j));
 				}
+				java.util.Collections.shuffle(list);
+				java.util.Collections.shuffle(list2);
+			//	for (int j = 0; j <10; j++) {
+				//	int zufall = (int) (Problem.anzahlJobs * Math.random());
+			//	loesungen[i] = swapSearch(loesungen[i], zufall);
+			//	zufall = (int) (Problem.anzahlJobs * Math.random());
+			//	}
 			}
-		
+		}
+		}
 
 		int besteLoesung = ermittleBesteLoesung(loesungen);
 		besteLoesungIteration = loesungen[besteLoesung];

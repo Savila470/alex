@@ -36,14 +36,9 @@ public class Loesung {
 
 			// System.out.println(leavingTime[0][j]);
 		}
-
-		// berücksischtige Wartekapazität
-		for (int j = Problem.wartekapazitaet + 1; j < leavingTime[0].length; j++) {
-
-			leavingTime[0][j] = Math.max(leavingTime[0][j - 1] + ausfuehrungszeiten[0][jobreihenfolge[j]],
-					leavingTime[1][j - Problem.wartekapazitaet - 1]);
-			// System.out.println(leavingTime[0][j]);
-		}
+		
+		
+		
 
 //    leaving Times sonst
 
@@ -57,11 +52,22 @@ public class Loesung {
 			}
 
 		}
+		
 
+		// berücksischtige Wartekapazität
+				for (int j = Problem.wartekapazitaet + 1; j < leavingTime[0].length; j++) {
+
+					leavingTime[0][j] = Math.max(leavingTime[0][j - 1] + ausfuehrungszeiten[0][jobreihenfolge[j]],
+							leavingTime[1][j - Problem.wartekapazitaet - 1]);
+				//System.out.println(leavingTime[0][j - 1] + ausfuehrungszeiten[0][jobreihenfolge[j]] +  " oder " + leavingTime[1][j - Problem.wartekapazitaet - 1]);
+					// System.out.println(leavingTime[0][j]);
+				
+
+				
 		// berücksischtige Wartekapazität
 		for (int i = 1; i < leavingTime.length - 1; i++) {
 
-			for (int j = Problem.wartekapazitaet + 1; j < leavingTime[0].length; j++) {
+			
 
 				leavingTime[i][j] = Math.max(Math.max(leavingTime[i][j - 1], leavingTime[i - 1][j])
 						+ ausfuehrungszeiten[i][jobreihenfolge[j]],leavingTime[i+1][j - Problem.wartekapazitaet - 1]  );
@@ -69,6 +75,10 @@ public class Loesung {
 			}
 
 		}
+		
+		
+		
+
 		
 		
 		// leavingTimes letzte Maschine

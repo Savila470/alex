@@ -11,7 +11,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String dateiName = "D:\\tailard\\tai50_5.txt";
+		String dateiName = Problem.dateiname;		
 		Reader reader = new Reader();
 		reader.ladeDatei(dateiName);
 
@@ -19,21 +19,30 @@ public class Main {
 		for (int i = 0; i < Problem.gesamtBearbeitungsZeitJobs.length; i++) {
 		}
 
-		Population population = new Population();
+		
 		try {
-			FileWriter fw = new FileWriter("D:\\QuickB3n\\logs\\ausgabe.txt");
+			FileWriter fw = new FileWriter("D:\\QuickB3n\\logs\\ausgabe.txt" );
 			BufferedWriter bw = new BufferedWriter(fw);
-
-			final long timeStart = System.currentTimeMillis();
-			for (int i = 0; i < 1000; i++) {
-
+			for(int l =0;l<10;l++) {
+				Population population = new Population();
+				final long timeStart = System.currentTimeMillis();
+			for (int i = 0; i < 300; i++) {
+				
 				population.generiereLoesung();
 				final long timeEnd = System.currentTimeMillis();
 				bw.write(population.getIterationsanzahl() + "; " + (timeEnd - timeStart) + "; "
 						+ population.getEliteloesung().berechneTFT());
 				bw.write("\n");
+				if((timeEnd - timeStart) > 600000) {
+					String s = "";
+					for (int k = 0; k < Problem.anzahlJobs; k++) {
+						s += population.getEliteloesung().getJobreihenfolge()[k] + ", ";
+					}
+					bw.write(s);
+					break;}
 			}
-			bw.close();
+			bw.write("\n");
+			
 			/*
 			 * Loesung loesung = population.generiereLoesung(); for (int i = 0; i < 10; i++)
 			 * {
@@ -44,6 +53,8 @@ public class Main {
 			 * 
 			 * } } System.out.println(loesung.berechneTFT());
 			 */
+			}
+			bw.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

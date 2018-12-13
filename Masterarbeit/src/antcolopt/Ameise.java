@@ -20,21 +20,25 @@ public class Ameise {
 	}
 
 	public void updateWahrscheinlichkeiten(double[][] matrix) {
+		
 
 		double summeAlleKanten = 0;
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
 				summeAlleKanten += matrix[aktuellePosition][i]
-						* Math.pow((100.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta);
+						* Math.pow((1.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta);
 			}
 		}
+			
+
+
 
 		// System.out.println("Summe alle Kanten: " + summeAlleKanten);
 
 		for (int i = 0; i < Problem.anzahlJobs; i++) {
 			if (erlaubteKnoten.contains(i)) {
 				wahrscheinlichkeiten[i] = Math.pow((matrix[aktuellePosition][i]), Problem.alpha)
-						* Math.pow((100.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta) / summeAlleKanten;
+						* Math.pow((1.0 / Problem.gesamtBearbeitungsZeitJobs[i]), Problem.beta) / summeAlleKanten;
 			} else {
 				wahrscheinlichkeiten[i] = 0;
 			}
